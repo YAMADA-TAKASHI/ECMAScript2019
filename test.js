@@ -387,4 +387,257 @@ function _e(str) {
     // hoge();   //Arguments is missing
     console.log(hoge('hogehoge'));      //hogehoge
   }
+
+  //可変長引数(... Rest Parameter)
+  {
+    function sum(...args) {
+      let result = 0;
+      for(let arg of args) {
+        result += arg;
+      }
+      return result;
+    }
+
+    console.log(sum(10, 20, 30, 40, 50));   //150
+  }
+
+  //アロー関数
+  {
+    let data = [1, 2, 3];
+
+    //従来の関数リテラルでの表記
+    let formatted1 = data.map(function(value, index) {
+      return value * value;
+    });
+    console.log(formatted1);
+
+    //アロー関数による表記
+    let formatted2 = data.map((value, index) => value * value);
+    console.log(formatted2);  // [1, 4, 9]
+
+    //引数がひとつの場合はカッコを省略できる
+    console.log(data.map(value => value * value));  // [1, 4, 9]
+
+    //引数がない場合は()を省略できない
+    console.log(data.map(() => 5 * 5));   //[25, 25, 25]
+
+    //アロー関数はthisを固定する
+    {
+      var Counter = function() {
+        //現在のthisを退避
+        // var _this = this;    //不要
+        this.count = 0;
+
+        //1000ミリ秒感覚でcountプロパティをインクリメント
+        setInterval(() => {
+          // _this.count++;   //こうでなく
+          this.count++;       //こう
+        }, 1000);
+      }
+      var c = new Counter();
+    }
+  }
+}
+
+//Promiseオブジェクト
+{
+  //シンプルなPromise
+  {
+    function hoge(value) {
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          if (value) {
+            resolve(`x${value}x`);
+          }
+          else {
+            reject(new Error('入力値が空です'));
+          }
+        }, 1000);
+      })
+    }
+
+    hoge('山田')    //x山田x、終了
+    .then(
+      response => {
+        console.log(response);
+      }
+    )
+    .catch(
+      error => {
+        console.log(`Error. ${error.message}`);
+      }
+    )
+    .finally(
+      () => {
+        console.log('終了');
+      }
+    )
+
+    //catchを簡略化も可能
+    hoge('')    //Error. 入力値が空です
+    .then(
+      response => {
+        console.log(response);
+      },
+      error => {
+        console.log(`Error. ${error.message}`);
+      }
+    )
+    .finally(
+      () => {
+        console.log('終了');
+      }
+    )
+
+    //Promiseの連結
+    hoge('山田')
+    .then(
+      response => {
+        return hoge(response);
+      }
+    )
+    .then(
+      response => {
+        return hoge(response);
+      }
+    )
+    .then(
+      response => {
+        console.log(response);
+      }
+    )
+    .catch(
+      error => {
+        console.log(`Error. ${error.message}`);
+      }
+    )
+
+    //async/await構文 + Promise で非同期処理を同期処理風に記述する
+    {
+      async function serial(value) {    //asyncの中でawaitが使えてPromise関数が同期で動く
+        let result = await hoge(value);
+        result = await hoge(result);
+        result = await hoge(result);
+
+        //非同期処理後に実行
+        console.log('処理が終了しました');
+        return result;    //Promise
+      }
+
+      //実行
+      serial('山田たかし').then(response => {
+        console.log(response);
+      }).catch(error => {
+        console.log(`Error. ${error.message}`);
+      });
+
+      //非同期処理中に処理すべき処理
+      console.log('---他の処理---');
+    }
+
+    //Promise.all 風数の非同期処理を並列して実行
+    {
+      Promise.all([
+        hoge('山田卓史'),
+        hoge('山田たかし'),
+        hoge('ヤマダタカシ')
+      ])
+      .then(
+        response => {
+          console.log(response);  //["x山田卓史x", "x山田たかしx", "xヤマダタカシx"]
+        }
+      )
+      .catch(
+        error => {
+          console.log(`Error.${error.message}`);
+        }
+      )
+    }
+
+    //raceメソッド 並行して実行された非同期処理のいずれかひとつが最初に完了したところで後続処理実行
+    {
+      Promise.race([
+        hoge('123'),
+        hoge('234'),
+        hoge('345')
+      ])
+      .then(
+        response => {
+          console.log(response);    //x123x ※処理の重さによって変動する場合あり
+        }
+      )
+      .catch(
+        error => {
+          console.log(`Error.${error.message}`);
+        }
+      );
+    }
+  }
+}
+
+//fetch 非同期通信 (Promiseを前提、$.ajaxと似ている)
+{
+  /** 
+  * 基本構文：fetch(url[, init])
+  * オプション
+  * method リクエストメソッド(デフォルトはGET)
+  * headers リクエストヘッダー
+  * body リクエスト本体
+  * returns void
+  * URLSearchParams/FormDataでGET/POSTクエリ作成
+  * ただし クロスオリジン(サイトまたぎ通信)をする場合は、レスポンスヘッダに Access-Control-Allow-Headersが必要
+  */
+  fetch('https://ntp-a1.nict.go.jp/cgi-bin/json')   //Promiseとして返す
+    .then(response => response.json())
+    .then(text => console.log(new Date(parseInt(text.st) * 1000).toString()));  //Tue Feb 04 2020 22:40:07 GMT+0900 (日本標準時)
+
+  //通信の成否を確認する場合
+  fetch('https://ntp-a1.nict.go.jp/cgi-bin/json')   //Promiseとして返す
+    .then(response => {
+      if(response.ok) {
+        return response.json();
+      }
+      else {
+        throw new Error('通信時にエラーが発生しました');
+      }
+    })
+    .then(text => console.log(new Date(parseInt(text.st) * 1000).toString()))
+    .catch(error => console.log(error));
+
+  //POST通信
+  let data = new FormData();    //URLSearchParams()でもOK
+  data.append('format', 'Y年m月d日 H:i:s');
+  fetch('https://ntp-a1.nict.go.jp/cgi-bin/json', {
+    method:'POST',
+    body:data,
+
+    //JSONを送信する場合
+    // headers: {
+    //   'content-type':'application/json'
+    // },
+    // body:JSON.stringify(data),
+  })   
+    .then(response => response.json())
+    .then(text => console.log(new Date(parseInt(text.st) * 1000).toString()));
+}
+
+//Proxyオブジェクト > オブジェクトの挙動をカスタマイズする(set/get/enumerate/iterate/deleteProperty)
+{
+  let obj = {hoge:'ほげ', foo:'ふー'};
+  var p_obj = new Proxy(obj, {
+    get(target, prop) {
+      return prop in target ? target[prop] : '?';
+    }
+  });
+  console.log(p_obj.hoge);    //ほげ
+  console.log(p_obj.nothing);   // ?
+  
+  p_obj.goo = 'ぐう';
+  console.log(obj.goo);     //ぐう  > 本体にも反映されている
+  console.log(p_obj.goo);     //ぐう
+}
+
+//Map／Set
+{
+  
 }
