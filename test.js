@@ -439,6 +439,114 @@ function _e(str) {
   }
 }
 
+//fetch 非同期通信 (Promiseを前提、$.ajaxと似ている)
+{
+  /** 
+  * 基本構文：fetch(url[, init])
+  * オプション
+  * method リクエストメソッド(デフォルトはGET)
+  * headers リクエストヘッダー
+  * body リクエスト本体
+  * returns void
+  * URLSearchParams/FormDataでGET/POSTクエリ作成
+  * ただし クロスオリジン(サイトまたぎ通信)をする場合は、レスポンスヘッダに Access-Control-Allow-Headersが必要
+  */
+  fetch('https://ntp-a1.nict.go.jp/cgi-bin/json')   //Promiseとして返す
+    .then(response => response.json())
+    .then(text => console.log(new Date(parseInt(text.st) * 1000).toString()));  //Tue Feb 04 2020 22:40:07 GMT+0900 (日本標準時)
+
+  //通信の成否を確認する場合
+  fetch('https://ntp-a1.nict.go.jp/cgi-bin/json')   //Promiseとして返す
+    .then(response => {
+      if(response.ok) {
+        return response.json();
+      }
+      else {
+        throw new Error('通信時にエラーが発生しました');
+      }
+    })
+    .then(text => console.log(new Date(parseInt(text.st) * 1000).toString()))
+    .catch(error => console.log(error));
+
+  //POST通信
+  let data = new FormData();    //URLSearchParams()でもOK
+  data.append('format', 'Y年m月d日 H:i:s');
+  fetch('https://ntp-a1.nict.go.jp/cgi-bin/json', {
+    method:'POST',
+    body:data,
+
+    //JSONを送信する場合
+    // headers: {
+    //   'content-type':'application/json'
+    // },
+    // body:JSON.stringify(data),
+  })   
+    .then(response => response.json())
+    .then(text => console.log(new Date(parseInt(text.st) * 1000).toString()));
+}
+
+//Proxyオブジェクト > オブジェクトの挙動をカスタマイズする(set/get/enumerate/iterate/deleteProperty)
+{
+  let obj = {hoge:'ほげ', foo:'ふー'};
+  var p_obj = new Proxy(obj, {
+    get(target, prop) {
+      return prop in target ? target[prop] : '?';
+    }
+  });
+  console.log(p_obj.hoge);    //ほげ
+  console.log(p_obj.nothing);   // ?
+  
+  p_obj.goo = 'ぐう';
+  console.log(obj.goo);     //ぐう  > 本体にも反映されている
+  console.log(p_obj.goo);     //ぐう
+}
+
+//Map／Set
+{
+  let obj = [];
+
+  //マップの生成&値の登録
+  let m = new Map();
+  m.set('hoge', 'ホゲ');
+  m.set('foo', 'ふう');
+  m.set('piyo', 'ぴよ');
+
+  m.set(obj, 'オブジェクト');
+  console.log(m.get('hoge')); //ほげ
+  console.log(m.get(obj));    //オブジェクト
+  console.log(m.get({}));   //undefined
+  console.log(m.has('hoge')); //true
+  
+  //マップのキーを列挙
+  for(let key of m.keys()) {  
+    console.log(key);   //hoge, foo, piyo, []
+  }
+  
+  //マップの値を列挙
+  for(let value of m.values()) {
+    console.log(value);  //ホゲ、ふう、ぴよ、オブジェクト
+  }
+
+  //マップのキー、値を列挙
+  for(let [key, value] of m) {
+    console.log(`${key}:${value}`);   //hoge:ほげ、foo:ふぅ、piyo:ぴよ、:オブジェクト
+  }
+
+  //マップを順番に処理
+  m.forEach((value, key) => console.log(`${key}=${value}`));  //hoge=ほげ、foo=ふぅ、piyo=ぴよ、=オブジェクト
+
+  //hogeキーを削除
+  m.delete('hoge');
+  console.log(m); //{"foo" => "ふう", "piyo" => "ぴよ", Array(0) => "オブジェクト"}
+
+  //すべてのキーを削除
+  m.clear();
+  console.log(m); //Map(0) {}
+}
+
+
+
+
 //Promiseオブジェクト
 {
   //シンプルなPromise
@@ -532,7 +640,7 @@ function _e(str) {
       });
 
       //非同期処理中に処理すべき処理
-      console.log('---他の処理---');
+      console.log('Promise ---他の処理---');
     }
 
     //Promise.all 風数の非同期処理を並列して実行
@@ -573,71 +681,4 @@ function _e(str) {
       );
     }
   }
-}
-
-//fetch 非同期通信 (Promiseを前提、$.ajaxと似ている)
-{
-  /** 
-  * 基本構文：fetch(url[, init])
-  * オプション
-  * method リクエストメソッド(デフォルトはGET)
-  * headers リクエストヘッダー
-  * body リクエスト本体
-  * returns void
-  * URLSearchParams/FormDataでGET/POSTクエリ作成
-  * ただし クロスオリジン(サイトまたぎ通信)をする場合は、レスポンスヘッダに Access-Control-Allow-Headersが必要
-  */
-  fetch('https://ntp-a1.nict.go.jp/cgi-bin/json')   //Promiseとして返す
-    .then(response => response.json())
-    .then(text => console.log(new Date(parseInt(text.st) * 1000).toString()));  //Tue Feb 04 2020 22:40:07 GMT+0900 (日本標準時)
-
-  //通信の成否を確認する場合
-  fetch('https://ntp-a1.nict.go.jp/cgi-bin/json')   //Promiseとして返す
-    .then(response => {
-      if(response.ok) {
-        return response.json();
-      }
-      else {
-        throw new Error('通信時にエラーが発生しました');
-      }
-    })
-    .then(text => console.log(new Date(parseInt(text.st) * 1000).toString()))
-    .catch(error => console.log(error));
-
-  //POST通信
-  let data = new FormData();    //URLSearchParams()でもOK
-  data.append('format', 'Y年m月d日 H:i:s');
-  fetch('https://ntp-a1.nict.go.jp/cgi-bin/json', {
-    method:'POST',
-    body:data,
-
-    //JSONを送信する場合
-    // headers: {
-    //   'content-type':'application/json'
-    // },
-    // body:JSON.stringify(data),
-  })   
-    .then(response => response.json())
-    .then(text => console.log(new Date(parseInt(text.st) * 1000).toString()));
-}
-
-//Proxyオブジェクト > オブジェクトの挙動をカスタマイズする(set/get/enumerate/iterate/deleteProperty)
-{
-  let obj = {hoge:'ほげ', foo:'ふー'};
-  var p_obj = new Proxy(obj, {
-    get(target, prop) {
-      return prop in target ? target[prop] : '?';
-    }
-  });
-  console.log(p_obj.hoge);    //ほげ
-  console.log(p_obj.nothing);   // ?
-  
-  p_obj.goo = 'ぐう';
-  console.log(obj.goo);     //ぐう  > 本体にも反映されている
-  console.log(p_obj.goo);     //ぐう
-}
-
-//Map／Set
-{
-  
 }
