@@ -542,8 +542,51 @@ function _e(str) {
   //すべてのキーを削除
   m.clear();
   console.log(m); //Map(0) {}
+
+  //配列内配列定義
+  let mm = new Map([['hoge', 'ほげ'], ['foo', 'ふう'], ['piyo', 'ぴよ'], [obj, 'オブジェクト！']]);
+  console.log(mm);    //  {"hoge" => "ほげ", "foo" => "ふう", "piyo" => "ぴよ", Array(0) => "オブジェクト！"}
+  console.log(mm.get(obj));   //オブジェクト！
 }
 
+//Setオブジェクト・・・重複しない値の集合を管理、重複した場合、これを無視
+console.log('---Setオブジェクト---');
+{
+  let obj = {};
+
+  //セットの生成&値の登録
+  let s = new Set();
+  s.add(5);
+  s.add(10);
+  s.add(8);
+  s.add(0);
+
+  //重複した値は無視
+  s.add(8);
+
+  //任意のオブジェクト型を登録可能
+  s.add(obj);
+
+  //確認
+  console.log(s.size);      //5
+  console.log(s.has(5));    //true
+  console.log(s.has({}));   //false 参照型に注意！
+  console.log(s.has(obj));  //true
+
+  //値を削除
+  s.delete(5);
+
+  //列挙
+  for(let value of s) {
+    console.log(value);   //10、8、0、{}
+  }
+
+  //クリア
+  s.clear();
+
+  //確認
+  console.log(`s:${s}`);  // s:[object Set]
+}
 
 
 
