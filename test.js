@@ -1,4 +1,5 @@
 //const変数
+console.log('========= const変数 =========');
 {
   const val1 = 100
   console.log(val1)
@@ -9,6 +10,7 @@
 }
 
 //const 配列の一部の書き換えはOK
+console.log('========= const配列 =========');
 {
   const data = [1, 2, 3];
   data[0] = 10;
@@ -18,6 +20,7 @@
 }
 
 //整数リテラル
+console.log('========= 整数リテラル =========');
 {
   console.log(0o10 === 8)       //8進数 true
   console.log(0b1111 == 15)     //2進数 true
@@ -30,12 +33,14 @@
 }
 
 //べき乗演算子
+console.log('========= べき乗演算子 =========');
 {
   console.log(Math.pow(2, 3))   //8
   console.log(2 ** 3)           //8
 }
 
 //テンプレート文字列
+console.log('========= テンプレート文字列 =========');
 {
   let str1 = `こんにちは、
   あかちゃん`
@@ -91,6 +96,7 @@ function _e(str) {
 }
 
 //エスケープシーケンスをそのまま出力[ECMA20定数として]
+console.log('========= エスケープシーケンス そのまま出力 =========');
 {
   function e(templates, ...values) {
     let result = '';
@@ -107,6 +113,7 @@ function _e(str) {
 }
 
 //Symbol
+console.log('========= Symbol =========');
 {
   let hoge = Symbol('hoge');
   let hoge2 = Symbol('hoge')
@@ -120,6 +127,7 @@ function _e(str) {
 }
 
 //シンボルの利用例
+console.log('========= シンボルの利用例 =========');
 {
   //定数として
   const JAVASCRIPT = Symbol();
@@ -143,6 +151,7 @@ function _e(str) {
 }
 
 //分割代入
+console.log('========= 分割代入 =========');
 {
   {
     let [hoge, foo] = [15, 21];
@@ -230,6 +239,7 @@ function _e(str) {
 }
 
 //名前付き引数{引数}
+console.log('========= 名前付き引数{引数} =========');
 {
   function trapezoid({upper = 1, lower = 1, height = 1}) {
     return (upper + lower) * height / 2;
@@ -270,6 +280,7 @@ function _e(str) {
 }
 
 //展開演算子
+console.log('========= 展開演算子 =========');
 {
   console.log(Math.max(100, -10, 50, 108));                 //可変長引数を受け取り最大値を返す
   console.log(Math.max([100, -10, 50, 108]));               //配列を渡すと NaN エラー
@@ -277,7 +288,8 @@ function _e(str) {
   console.log(Math.max(...[100, -10, 50, 108]));            //ES2015以降
 }
 
-//for文 ES2019
+//for文
+console.log('========= for文 =========');
 {
   //for...of
   {
@@ -305,6 +317,8 @@ function _e(str) {
 }
 
 //try-catch
+console.log('========= try-catch =========');
+
 {
   //従来
   {
@@ -336,6 +350,7 @@ function _e(str) {
 }
 
 //関数
+console.log('========= 関数 =========');
 {
   //従来
   {
@@ -440,6 +455,8 @@ function _e(str) {
 }
 
 //fetch 非同期通信 (Promiseを前提、$.ajaxと似ている)
+console.log('========= fetch =========');
+
 {
   /** 
   * 基本構文：fetch(url[, init])
@@ -486,6 +503,7 @@ function _e(str) {
 }
 
 //Proxyオブジェクト > オブジェクトの挙動をカスタマイズする(set/get/enumerate/iterate/deleteProperty)
+console.log('========= Proxyオブジェクト =========');
 {
   let obj = {hoge:'ほげ', foo:'ふー'};
   var p_obj = new Proxy(obj, {
@@ -501,7 +519,8 @@ function _e(str) {
   console.log(p_obj.goo);     //ぐう
 }
 
-//Map／Set
+//Map
+console.log('========= MAPオブジェクト =========');
 {
   let obj = [];
 
@@ -550,7 +569,7 @@ function _e(str) {
 }
 
 //Setオブジェクト・・・重複しない値の集合を管理、重複した場合、これを無視
-console.log('---Setオブジェクト---');
+console.log('========= Setオブジェクト =========');
 {
   let obj = {};
 
@@ -586,8 +605,37 @@ console.log('---Setオブジェクト---');
 
   //確認
   console.log(`s:${s}`);  // s:[object Set]
+
+  //コンストラクターで初期化
+  let ss = new Set([5, 10, 8, 0, 8, obj]);
+  console.log(ss);
 }
 
+//Unicode
+console.log('========= Unicode =========')
+{
+  //サロゲートペア(最大4byte文字)   
+  let str = '叱られて';         //叱は特殊文字扱いで4byte扱いだったので2文字でカウント
+  console.log(str.length);    //4 ※よって従来は5だった
+
+  //for...ofでもサロゲートペア
+  for(let d of str) {
+    console.log(d);     //叱、ら、れ、て
+  }
+
+  //エスケープシーケンス拡張
+  console.log('\\u{udf9f}'==='?');    //true ※のはずだがfalse ブラウザが非対応？
+
+  //サロゲートペアからコードポイントを取得、設定
+  console.log('叱られ'.codePointAt(0).toString(16));    //20b9f のはずだが 53f1
+  console.log(String.fromCodePoint(0x20b9f));          //叱
+}
+
+//正規表現
+console.log('========= 正規表現 =========');
+{
+
+}
 
 
 //Promiseオブジェクト
