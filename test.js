@@ -691,6 +691,25 @@ console.log('========= 正規表現 =========');
   }
 }
 
+//正規表現 肯定後読みと否定後読み [2018s]
+{
+  let re1 = /いろ(?=はに)/g;    //後ろに「はに」を含む「いろ」を検索
+  let re2 = /いろ(?!はに)/g;    //後ろに「はに」を含まない「いろ」を検索
+  let re3 = /(?<=。)いろ/g;     //前に「。」を含む「いろ」を検索
+  let re4 = /(?<!。)いろ/g;     //前に「。」を含まない「いろ」を検索
+
+  let msg1 = 'いろはにほへと';
+  let msg2 = 'いろものですね。いろいろと';
+  console.log(msg1.match(re1));   // ["いろ"]
+  console.log(msg2.match(re1));   // null
+  console.log(msg1.match(re2));   // null
+  console.log(msg2.match(re2));   // ["いろ", "いろ", "いろ"]
+  console.log(msg1.match(re3));   // null
+  console.log(msg2.match(re3));   // ["いろ"]
+  console.log(msg1.match(re4));   // ["いろ"]
+  console.log(msg2.match(re4));   // ["いろ", "いろ"]
+}
+
 
 //Promiseオブジェクト
 {
