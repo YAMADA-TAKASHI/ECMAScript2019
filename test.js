@@ -634,7 +634,61 @@ console.log('========= Unicode =========')
 //正規表現
 console.log('========= 正規表現 =========');
 {
+  let str = '叱られ';
+  console.log(/^.られ$/u.test(str));    //true .は任意の一文字 ＾：は先頭完全一致 ＄：後方完全一致
+  
+  str = '叱られ.....'
+  console.log(/^.られ/u.test(str));    //true ＾：先頭完全一致
 
+  str = '---叱られ'
+  console.log(/.られ$/u.test(str));    //true ＄：後方完全一致
+
+
+  let re = /WINGS/y;
+  console.log(re.flags);            //y フラグ
+  console.log(re.test('WINGS'));    //true .testは一致を判定
+  re.lastIndex = 2;                 //3文字目を比較対象にマッチングする設定
+  console.log(re.test('出版WINGS')); //true 3文字目と比較
+
+  //sフラグ > .(任意の一文字)がCR/LFなどの改行にも一致させるフラグ
+  let re2 = /WINGSプロジェクト.メンバー募集中！/s;
+  let re3 = 'WINGSプロジェクト\nメンバー募集中！';
+  console.log(re2.test(re3));       //true
+}
+
+//正規表現 Unicodeプロパティエスケープ \p{}
+{
+  let str = 'あか巻紙あお巻紙き巻紙';
+
+  //uフラグは必須(p大文字で否定、scxで濁点、句読点含む)
+  console.log(str.match(/\p{sc=Hiragana}/gu));      //ひらがな  ["あ", "か", "あ", "お", "き"]
+  console.log(str.match(/\p{sc=Katakana}/gu));      //カタカナ  null
+  console.log(str.match(/\p{sc=Han}/gu));           //漢字     ["巻", "紙", "巻", "紙", "巻", "紙"]
+  console.log(str.match(/\p{P}/gu));               //句読点     null
+}
+
+//正規表現「名前付きキャプチャグループ」 [2018]
+{
+  let re = /(?<area>0\d{1,4})-(?<city>\d{1,4})-(?<local>\d{3,4})/;
+  let msg = '電話番号は0297-66-1703です。';
+  let result = msg.match(re);   
+  console.log(`市外局番：${result.groups.area}`);
+  console.log(`市内局番：${result.groups.city}`);
+  console.log(`加入者番号：${result.groups.local}`);
+
+  //後方参照
+  {
+    let mail = '問合せは<a href="mailto:hoge@example.com">hoge@example.com</a>から';
+    let re = /<a href="mailto:(?<mail>.+?)">\k<mail><\/a>/;
+    console.log(mail.match(re)[0]); //<a href="mailto:hoge@example.com">hoge@example.com</a>
+  }
+
+  //replace
+  {
+    let re = /(?<area>0\d{1,4})-(?<city>\d{1,4})-(?<local>\d{3,4})/g;
+    let msg = '電話番号は012-345-6789です';
+    console.log(msg.replace(re, '$<area>($<city>)$<local>'));  // 電話番号は012(345)6789です
+  }
 }
 
 
