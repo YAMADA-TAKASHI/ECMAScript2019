@@ -710,6 +710,81 @@ console.log('========= 正規表現 =========');
   console.log(msg2.match(re4));   // ["いろ", "いろ"]
 }
 
+//String/Array/Math/Object 組み込みオブジェクトメソッド拡充
+{
+  /** String
+    fromCodePoint(code,…)	コードポイント値から文字列を生成
+    raw`str`				      テンプレート文字列の生の文字列を取得
+    codePointAt(pos)		  UTF16エンコードされたコードポイント値を取得（引数posは文字列内の位置）
+    normalize([form])		  文字列を引数formの形式で正規化（引数formの値はNFC、NFD、NFKCなど6）
+    repeat(num)			    	文字列を指定回数だけ繰り返したものを取得
+    startsWith(search[,pos])文字列が指定された部分文字列searchで始まるか（引数posは検索開始位置
+    endsWith(search[,pos])	文字列が指定された部分文字列searchで終わるか
+    includes(search[,pos])	文字列に指定された部分文字列searchが含まれるか
+    pasStart(len[,pad])		文字列が指定された長さlenになるよう、文字pad（既定は空白）を左側に補う［2017］
+    padEnd(len[,pad])		  文字列が指定された長さlenになるよう、文字pad（既定は空白）を右側に補う［2017］
+    trimStart()				    文字列の先頭から空白を除去［2019］
+    trimEnd()				      文字列の末尾から空白を除去［2019］
+  */
+
+  /** Array
+    ＊from(alike[,map[,othis])				  配列ライクなオブジェクト、列挙可能なオブジェクトを配列に変換（引数mapは要素を変換するための関数、othisはthisとなるオブジェクト）
+    ＊of(e1,…)								          可変長引数e1…から配列を生成
+    copyWithin(target,start[,end])			start～end1番目の要素をtargetの位置にコピー
+    find(fn(elem,index,ary)[,othis])		コールバック関数fnが初めてtrueを返した要素を取得（コールバック関数の引数は、先頭から要素値、インデックス、配列）
+    findIndex(fn(elem,index,ary)[,othis])	コールバック関数fnが初めてtrueを返した要素のインデックス番号を取得（コールバック関数の引数は、先頭から要素値、インデックス、配列）
+    fill(v,start,end)					        	start～end1番目の要素に値vをセット
+    includes(elem[,start])					    指定された要素elemが配列に含まれてるか（引数startは検索開始位置）［2016］
+    flat([depth])							          配列を指定の深さdepthでフラット化［2019］
+    flatMap(fn(elem,index,ary)[,othis])	配列をコールバック関数で処理した後にフラット化（コールバック関数の引数は、先頭から要素値、インデックス、配列）［2019］
+    keys()									            配列のすべてのキーを含んだイテレーターを取得
+    values()								            配列のすべての値を含んだイテレーターを取得
+    entries()								            配列のすべてのエントリー（キー／値）を含んだイテレーターを取得
+  */
+
+  /** Math
+    clz32(x)		指定した値を32ビット符号なし整数にした時の、先頭の0の個数
+    sign(x)			指定した値が正数の場合は1、負数の場合は1、0の場合は0を返す
+    trunc(x)		小数部分を単純に切り捨て、整数部分を取得
+    cbrt(x)			立方根を取得
+    hypot(x1,x2,…)	引数の二乗和の平方根を取得
+    log10(x)		底を10とする対数を取得
+    log2(x)			底を2とする対数を取得
+    log1p(x)		引数xに1を加えたものの自然対数を取得
+    expm1(x)		e^x1を取得
+    cosh(x)			ハイパーボリックコサインを取得
+    sinh(x)			ハイパーボリックサインを取得
+    tanh(x)			ハイパーボリックタンジェントを取得
+    acosh(x)		ハイパーボリックアークコサインを取得
+    asinh(x)		ハイパーボリックアークサインを取得
+    atanh(x)		ハイパーボリックアークタンジェントを取得
+    imul(a,b)		高速な32ビット整数の乗算
+    fround(x)		指定した値に最も近い単精度float値を取得
+   */
+
+  /**
+    ＊EPSILON			1と、Number値で表現できる1よりも大きい最小値との差（2.2204460492503130808472633361816E16）
+    ＊MIN_SAFE_INTEGER	JavaScriptにおいて正確に扱える最小の整数（9007199254740991）
+    ＊MAX_SAFE_INTEGER	JavaScriptにおいて正確に扱える最大の整数（9007199254740991）
+    ＊isNaN(num)			NaN（NotaNumber）であるかを判定＊isFinite(num)有限値であるかを判定
+    ＊isInteger(num)		整数値であるかを判定
+    ＊isSafeInteger(num)	SafeInteger（正しくIEEE754倍精度数として表現できるか）であるかを判定
+    ＊parseFloat(str)	文字列を小数点数に変換
+    ＊parseInt(str[,radix])文字列を整数に変換（引数radixは基数）
+  */
+
+  /** Object
+    ＊assign(target,src,…)				オブジェクトtargetに対してオブジェクトsrc,…のプロパティをコピー
+    ＊is(v1,v2)							引数同士が等しいかどうかを判定
+    ＊getOwnPropertyDescriptors(obj)		オブジェクトobjに含まれるすべてのプロパティ情報を取得［2017］
+    ＊getOwnPropertySymbols(obj)			オブジェクトobj配下に含まれるすべてのシンボルプロパティを取得（具体的な例はシンボルの項を参照）
+    ＊setPrototypeOf(obj,proto)			オブジェクトobjに新たなプロトタイプprotoを設定
+    ＊values(obj)						オブジェクトobj自身に存在する列挙可能なプロパティ値の配列を取得［2017］
+    ＊entries(obj)						オブジェクトobj自身に存在する列挙可能なプロパティ（[名前,値]の組み）の配列を取得［2017］
+    ＊fromEntries(list)					「キー,値」のリストからオブジェクトを生成［2019］
+  */
+}
+
 
 //Promiseオブジェクト
 {
