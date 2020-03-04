@@ -657,6 +657,8 @@ console.log('========= 正規表現 =========');
 }
 
 //正規表現 Unicodeプロパティエスケープ \p{}
+console.log('========= 正規表現 Unicodeプロパティエスケープ =========');
+
 {
   let str = 'あか巻紙あお巻紙き巻紙';
 
@@ -668,6 +670,7 @@ console.log('========= 正規表現 =========');
 }
 
 //正規表現「名前付きキャプチャグループ」 [2018]
+console.log('========= 正規表現「名前付きキャプチャグループ」 =========');
 {
   let re = /(?<area>0\d{1,4})-(?<city>\d{1,4})-(?<local>\d{3,4})/;
   let msg = '電話番号は0297-66-1703です。';
@@ -691,7 +694,8 @@ console.log('========= 正規表現 =========');
   }
 }
 
-//正規表現 肯定後読みと否定後読み [2018s]
+//正規表現 肯定後読みと否定後読み [2018]
+console.log('========= 正規表現 肯定後読みと否定後読み =========');
 {
   let re1 = /いろ(?=はに)/g;    //後ろに「はに」を含む「いろ」を検索
   let re2 = /いろ(?!はに)/g;    //後ろに「はに」を含まない「いろ」を検索
@@ -785,8 +789,143 @@ console.log('========= 正規表現 =========');
   */
 }
 
+//オブジェクト指向構文
+console.log('========= オブジェクト指向構文 =========');
+{
+  //変数名を同名のプロパティ名にする
+  {
+    let title = 'AngularJSアプリケーションプログラミング';
+    let price = 3700;
+    let publish = '技術評論者';
+    let book = { title, price, publish };
+    console.log(book);        //{title: "AngularJSアプリケーションプログラミング", price: 3700, publish: "技術評論者"}
+    console.log(book.title);  //AngularJSアプリケーションプログラミング
+  }
+
+  //メソッド定義
+  {
+    let book = {
+      title: 'AngularJSアプリケーションプログラミング',
+      price: 3700,
+      toString() {
+        console.log(`${this.title}:${this.price}`);
+      }
+    }
+    book.toString();  // AngularJSアプリケーションプログラミング:3700
+  }
+
+  //プロパティ動的生成
+  {
+    let i = 0;
+    let data = {
+      ['hoge'+ ++i]: 15,
+      ['hoge'+ ++i]: 20,
+      ['hoge'+ ++i]: 25
+    };
+    console.log(data);  //{hoge1: 15, hoge2: 20, hoge3: 25}
+  }
+}
+
+//クラス(class)定義 [2015/ES6]
+console.log('========= クラス(class)定義 =========');
+{
+  //クラス定義
+  {
+    class Person {
+      constructor(name, sex) {
+        this.name = name;
+        this.sex = sex;
+      }
+
+      show() {
+        return `${this.name}は${this.sex}です`;
+      }
+    }
+    let p = new Person('理央', '女');
+    console.log(p.show());          //理央は女です
+  }
+
+  //匿名クラスで定義
+  {
+    const Person = class {
+      constructor(name, sex) {
+        this.name = name;
+        this.sex = sex;
+      }
+
+      show() {
+        return `${this.name}は${this.sex}です`;
+      }
+    }
+    let p = new Person('理央', '女');
+    console.log(p.show());          //理央は女です
+  }
+
+  //静的メソッド static
+  {
+    class Figure {
+      static triangle(base, height) {
+        return base * height / 2;
+      }
+    }
+    console.log(Figure.triangle(10, 5));    //25
+  }
+
+  //getter/setter
+  {
+    //EX20XXではclassブロックの名でletインスタンス変数は定義できないらしいのでthisで定義/参照する
+    class Person {
+      constructor(name, sex) {
+        this.name = name;
+        this.sex = sex;
+      }
+      //ageプロパティのgetter/setter(実体は_ageに格納)
+      get age() {
+        return this._age;
+      }
+
+      set age(value) {
+        this._age = value;
+      }
+
+      show() {
+        return `${this.name}は${this.sex}、${this.age}歳です`;
+      }
+    }
+    let p = new Person('理央', '女');
+    p.age = 10;
+    console.log(p.show());  //理央は女、10歳です
+  }
+
+  //extends 継承 (Array/Date/Errorなどの組み込みオブジェクトも継承可能になってるらしい)
+  {
+    class Person {
+      constructor(name, sex) {
+        this.name = name;
+        this.sex = sex;
+      }
+
+      show() {
+        return `${this.name}は${this.sex}です。`;
+      }
+    }
+
+    class BusinessPerson extends Person {
+      constructor(name, sex, clazz) {
+        super(name, sex);
+        this.clazz = clazz;
+      }
+      show() {
+        return `${super.show()} 役職は${this.clazz}です。`;
+      }
+    }
+    let bp = new BusinessPerson('理央', '女', '主任');
+    console.log(bp.show());   //理央は女です。 役職は主任です。
+  }
+}
 
 //Promiseオブジェクト
+console.log('========= Promiseオブジェクト =========');
 {
   //シンプルなPromise
   {
