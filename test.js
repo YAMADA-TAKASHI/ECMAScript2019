@@ -924,6 +924,39 @@ console.log('========= クラス(class)定義 =========');
   }
 }
 
+//イテレーター iterator
+console.log('========= イテレーター iterator =========');
+{
+  let array_data = [1, 2, 3];
+  let str_data = 'いろは';
+  let map_data = new Map();
+  map_data.set('JS', 'JavaScript');
+  map_data.set('PL', 'Perl');
+  map_data.set('PY', 'Python');
+  for(let tmp of array_data) {
+    console.log(tmp);     //1、2、3
+  }
+
+  for(let tmp of str_data) {
+    console.log(tmp);     //い、ろ、は
+  }
+
+  for (let [key, value] of map_data) {
+    console.log(`${key}:${value}`);   //JS:JavaScript、PL:Perl、PY:Python
+  }
+
+  //原始的に書いてみる
+  let itr = array_data.values();
+  let c;
+  while(c = itr.next()) {
+    if(c.done) { break; }   //doneがtrueでbreak
+
+    //doneはイテレータプロパティ > イテレータが終端まで到達したかをboolで持つ
+    console.log(c.done);    //false,false,false,
+  }
+
+}
+
 //Promiseオブジェクト
 console.log('========= Promiseオブジェクト =========');
 {
