@@ -953,9 +953,39 @@ console.log('========= イテレーター iterator =========');
 
     //doneはイテレータプロパティ > イテレータが終端まで到達したかをboolで持つ
     console.log(c.done);    //false,false,false,
+    console.log(c.value);   //1,2,3
   }
 
+  //イテレーターを実装したクラスの準備
+  {
+    class MyClazz {
+      //引数で渡された配列を保持
+      constructor(data) {
+        this.data = data;
+      }
+
+      //デフォルトイテレーターを取得するためのメソッドを準備
+      [Symbol.iterator](){
+        let current = 0;
+        let that = this;
+        return {
+          //dataプロパティの辻の要素を取得
+          next(){
+            return current < that.data.length ?
+              {value:that.data[current++], done:false} :
+              {done: true};
+          }
+        };
+      }
+    }
+    //MyClazz内部で保持された配列を列挙
+    let c = new MyClazz(['ほげ', 'ふー', 'ぴよ']);
+    for(let d of c) {
+      console.log(d);   //ほげ、ふー、ぴよ
+    }
+  }
 }
+
 
 //Promiseオブジェクト
 console.log('========= Promiseオブジェクト =========');
