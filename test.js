@@ -455,8 +455,6 @@ console.log('========= 関数 =========');
 }
 
 //fetch 非同期通信 (Promiseを前提、$.ajaxと似ている)
-console.log('========= fetch =========');
-
 {
   /** 
   * 基本構文：fetch(url[, init])
@@ -499,7 +497,10 @@ console.log('========= fetch =========');
     // body:JSON.stringify(data),
   })   
     .then(response => response.json())
-    .then(text => console.log(new Date(parseInt(text.st) * 1000).toString()));
+    .then(text => {
+      console.log('========= fetch =========');
+      console.log(new Date(parseInt(text.st) * 1000).toString())
+    });
 }
 
 //Proxyオブジェクト > オブジェクトの挙動をカスタマイズする(set/get/enumerate/iterate/deleteProperty)
@@ -977,6 +978,14 @@ console.log('========= イテレーター iterator =========');
           }
         };
       }
+
+      //ジェネレーターを利用
+      *[Symbol.iterator]() {
+        let current = 10;
+        while(current < this.data.length) {
+          yield this.data[current++];
+        }
+      }
     }
     //MyClazz内部で保持された配列を列挙
     let c = new MyClazz(['ほげ', 'ふー', 'ぴよ']);
@@ -986,9 +995,58 @@ console.log('========= イテレーター iterator =========');
   }
 }
 
+//非同期処理を伴うイテレーター Async Iterators [2019]
+console.log('========= 非同期処理を伴うイテレーター Async Iterators =========');
+{
+  //非同期イテレーターを定義
+  async function* multi() {
+    for(let i = 1; i < 4; i++) {
+      //test1〜3.txtを取得&その内容を返す
+      let result = await fetch(`text${i}.txt`);
+      yield result.text();
+    }
+  }
+
+  async function hoge() {
+    //multi関数から順にtestX.txtの結果を取得&出力
+    for await (let content of multi()) {  //fetch(非同期)でも同期出力
+      console.log('========= 非同期処理を伴うイテレーター =========');
+      console.log(content);
+    }
+  }
+  hoge();
+}
+
+//ジェネレーター function* yeildが使用可能に(returnと似た命令)
+console.log('========= ジェネレーター function* yeildが使用可能に =========');
+{
+  //yieldはreturnとは違い、処理を一時停止/再開する
+  function* myGenerator() {
+    yield 'あ';
+    yield 'い';
+    yield 'う';
+  }
+
+  //for文で回せる
+  for(let t of myGenerator()) {
+    console.log(t);   //あ、い、う
+  }
+
+  //カウントダウンするジェネレーター
+  {
+    function* countdown(begin) {
+      while(begin >= 0) {
+        yield begin--;
+      }
+    }
+
+    for(let t of countdown(10)) {
+      console.log(t);
+    }
+  }
+}
 
 //Promiseオブジェクト
-console.log('========= Promiseオブジェクト =========');
 {
   //シンプルなPromise
   {
@@ -1008,6 +1066,7 @@ console.log('========= Promiseオブジェクト =========');
     hoge('山田')    //x山田x、終了
     .then(
       response => {
+        console.log('========= Promiseオブジェクト =========');
         console.log(response);
       }
     )
