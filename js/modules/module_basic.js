@@ -1,6 +1,6 @@
-import { triangle, circle } from "./libs/Figure.js";
-import * as fig from "./libs/Figure.js";
-import Fig from "./libs/Figure2.js";
+import { triangle, circle } from "../libs/Figure.js";
+import * as fig from "../libs/Figure.js";
+import Fig from "../libs/Figure2.js";
 
 //モジュール  ES Modules [2015]
 console.log('========= モジュール  ES Modules [2015] =========');

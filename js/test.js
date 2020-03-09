@@ -203,7 +203,7 @@ console.log('========= 分割代入 =========');
     console.log(foo);     //21
   }
 
-  //宣言のないオブジェクトの分割代入
+  //宣言のないオブジェクトの分割代入 (babelでうまく変換できない、webpackを使う)
   {
     let hoge, foo;
     ({hoge:x, foo} = {hoge:'ほげ', foo:'ふー'});
@@ -1002,7 +1002,7 @@ console.log('========= 非同期処理を伴うイテレーター Async Iterator
   async function* multi() {
     for(let i = 1; i < 4; i++) {
       //test1〜3.txtを取得&その内容を返す
-      let result = await fetch(`text${i}.txt`);
+      let result = await fetch(`../../assets/text${i}.txt`);
       yield result.text();
     }
   }
@@ -1016,6 +1016,7 @@ console.log('========= 非同期処理を伴うイテレーター Async Iterator
   }
   hoge();
 }
+
 
 //ジェネレーター function* yeildが使用可能に(returnと似た命令)
 console.log('========= ジェネレーター function* yeildが使用可能に =========');
